@@ -56,7 +56,7 @@ variables.
 
 The first two columns are:
 
- - Subject: numeric value from 1 tp 30, indicating the test subject
+ - Subject: numeric value from 1 to 30, indicating the test subject
  - Activity: plain text name of the performed activity
  
 Other 64 columns are numeric values of measurements means and standards

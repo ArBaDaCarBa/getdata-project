@@ -42,6 +42,12 @@ for (i in 1:nrow(activities)) {
 mean.or.std.cols <- grep('(mean|std)\\(\\)', features[,2])
 HAR.tidy <- HAR.tidy[,mean.or.std.cols]
 
+# Create dataset with average for each activity and each dataset
+HAR.tidy.means <- aggregate(HAR.tidy[3:length(HAR.tidy)],
+                             by=list(Subject=HAR.tidy$Subject,
+                                     Activity=HAR.tidy$Activity), FUN=mean)
+
+
 
 # Cleanup temporary vars
 rm(d1, d2)

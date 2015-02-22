@@ -1,12 +1,14 @@
-# 0 settings
-data.path <- 'data'
-data.name <- 'UCI HAR Dataset'
-
-# Download file
+# Download file in the data folder
+if (!file.exists('data')) {dir.create('data', recursive=TRUE)}
+if (!file.exists('data/UCI HAR Dataset.zip')) {
+  message('Downloading data file')
+  url <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
+  download.file(url, destfile='data/UCI HAR Dataset.zip', method='curl')
+  rm(url)
+}
 
 # Unzip file. Will probably not working on windows because of the /
-unzip(paste(data.path, paste(data.name, 'zip', sep='.'), sep='/'),
-      exdir=data.path)
+unzip('data/UCI HAR Dataset.zip', exdir='data')
 
 # Read the data files and merge them
 d1 <- read.table('data/UCI HAR Dataset/test/X_test.txt', sep='', header=F)
@@ -48,6 +50,9 @@ HAR.tidy.means <- aggregate(HAR.tidy[3:length(HAR.tidy)],
                                      Activity=HAR.tidy$Activity), FUN=mean)
 
 
+# Write averaged dataset to file
+message('Writing averaged tidy data to file')
+write.table(HAR.tidy.means, file="HAR-UCI-mean.txt", row.names=FALSE)
 
 # Cleanup temporary vars
 rm(d1, d2)
@@ -56,4 +61,3 @@ rm(s1, s2, s)
 rm(i)
 rm(mean.or.std.cols)
 rm(activities, features)
-rm(data.path, data.name)

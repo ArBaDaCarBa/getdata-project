@@ -2,44 +2,52 @@
 data.path <- 'data'
 data.name <- 'UCI HAR Dataset'
 
-# 1 Dowload file
+# Download file
 
-# 2 Unzip file
-unzip(paste(data.path, paste(data.name, 'zip', sep='.'), sep='/'), exdir=data.path)
+# Unzip file. Will probably not working on windows because of the /
+unzip(paste(data.path, paste(data.name, 'zip', sep='.'), sep='/'),
+      exdir=data.path)
 
 # Read the data files and merge them
 d1 <- read.table('data/UCI HAR Dataset/test/X_test.txt', sep='', header=F)
 d2 <- read.table('data/UCI HAR Dataset/train/X_train.txt', sep='', header=F)
-d <- rbind(d1, d2)
-rm(d1, d2)
+HAR.tidy <- rbind(d1, d2)
 
 # Add the correct column names
 features <- read.table('data/UCI HAR Dataset/features.txt', header=F)
-names(d) <- features[,2]
+names(HAR.tidy) <- features[,2]
 
 # Add activity info
 l1 <- read.table('data//UCI HAR Dataset/test/y_test.txt')
 l2 <- read.table('data//UCI HAR Dataset/train/y_train.txt')
 l <- rbind(l1, l2)
-d <- cbind(l, d)
-names(d)[1] <- 'Activity'
-rm(l1, l2, l)
+HAR.tidy <- cbind(l, HAR.tidy)
+names(HAR.tidy)[1] <- 'Activity'
 
 # Add subject info
 s1 <- read.table('data/UCI HAR Dataset/test/subject_test.txt')
 s2 <- read.table('data/UCI HAR Dataset/train/subject_train.txt')
 s <- rbind(s1, s2)
-d <- cbind(s, d)
-names(d)[1] <- 'Subject'
-rm(s1, s2, s)
+HAR.tidy <- cbind(s, HAR.tidy)
+names(HAR.tidy)[1] <- 'Subject'
 
 # Correct activities label
 activities <- read.table('data/UCI HAR Dataset/activity_labels.txt')
 for (i in 1:nrow(activities)) {
-  d$Activity <- replace(d$Activity, d$Activity==i, as.vector(activities[i, 2]))
+  HAR.tidy$Activity <- replace(HAR.tidy$Activity, HAR.tidy$Activity==i,
+                               as.vector(activities[i, 2]))
 }
-rm(i)
 
 # Remove non mean and non std columns
 mean.or.std.cols <- grep('(mean|std)\\(\\)', features[,2])
-e <- d[,mean.or.std.cols]
+HAR.tidy <- HAR.tidy[,mean.or.std.cols]
+
+
+# Cleanup temporary vars
+rm(d1, d2)
+rm(l1, l2, l)
+rm(s1, s2, s)
+rm(i)
+rm(mean.or.std.cols)
+rm(activities, features)
+rm(data.path, data.name)
